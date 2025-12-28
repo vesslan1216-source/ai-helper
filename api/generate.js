@@ -21,7 +21,7 @@ export default async function handler(req) {
     3. 硬核台词（专业、避坑、口语化）。
     4. 结尾引导（引导咨询你的给排水设计服务）。`;
 
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+    https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
