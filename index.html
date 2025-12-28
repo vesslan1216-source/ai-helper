@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>家装短视频爆款神器 - 给排水专家版</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-slate-50 min-h-screen">
+    <div class="max-w-md mx-auto bg-white min-h-screen shadow-lg flex flex-col">
+        <header class="bg-blue-600 p-6 text-white text-center">
+            <h1 class="text-2xl font-bold">家装 IP 爆款助手</h1>
+            <p class="text-blue-100 mt-2">给排水专业版 · AI 驱动进化中</p>
+        </header>
+
+        <main class="p-4 flex-grow">
+            <div class="bg-blue-50 p-4 rounded-xl mb-6">
+                <label class="block text-blue-800 font-bold mb-2">
+                    <i class="fas fa-hammer mr-2"></i>工地现状描述
+                </label>
+                <textarea id="userInput" rows="5" 
+                    class="w-full p-4 rounded-lg border-2 border-blue-200 focus:border-blue-500 focus:outline-none text-gray-700"
+                    placeholder="例如：今天在工地发现工人水管交叉没用过桥弯，这样会导致后期找平过厚..."></textarea>
+                
+                <div class="mt-4">
+                    <label class="block text-blue-800 font-bold mb-2">🔑 授权码</label>
+                    <input type="password" id="userCode" class="w-full p-2 rounded border border-blue-200" placeholder="输入您的 699 专属授权码">
+                </div>
+
+                <button onclick="generateScript()" id="genBtn"
+                    class="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl transition-all transform active:scale-95 shadow-lg">
+                    <span>生成爆款脚本</span> <i class="fas fa-magic ml-2"></i>
+                </button>
+            </div>
+
+            <div id="resultArea" class="hidden space-y-4">
+                <div class="border-l-4 border-green-500 bg-green-50 p-4 rounded-r-xl">
+                    <h3 class="font-bold text-green-800 mb-2">✨ AI 已生成脚本：</h3>
+                    <div id="scriptContent" class="text-gray-700 leading-relaxed whitespace-pre-wrap text-sm"></div>
+                </div>
+                <button onclick="copyText()" class="w-full py-3 border-2 border-blue-600 text-blue-600 rounded-xl font-bold">
+                    一键复制内容
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        async function generateScript() {
+            const prompt = document.getElementById('userInput').value;
+            const userCode = document.getElementById('userCode').value;
+            const btn = document.getElementById('genBtn');
+            const resultArea = document.getElementById('resultArea');
+
+            if (!prompt || !userCode) { alert('请填写工地描述和授权码！'); return; }
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 正在连接最强大脑...';
+
+            try {
+                const response = await fetch('/api/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt, userCode })
+                });
+                const data = await response.json();
+                if (data.error) throw new Error(data.error);
+
+                document.getElementById('scriptContent').innerText = data.text;
+                resultArea.classList.remove('hidden');
+            } catch (err) {
+                alert(err.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '重新生成 <i class="fas fa-magic ml-2"></i>';
+            }
+        }
+
+        function copyText() {
+            const text = document.getElementById('scriptContent').innerText;
+            navigator.clipboard.writeText(text).then(() => alert('脚本已成功复制！'));
+        }
+    </script>
+</body>
+</html>
